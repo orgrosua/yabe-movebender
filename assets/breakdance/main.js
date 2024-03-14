@@ -1,4 +1,3 @@
-import './style.css';
 import { logger } from './logger.js';
 import { defaultHooks } from '@wordpress/hooks';
 import { set } from 'lodash-es';

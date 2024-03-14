@@ -69,7 +69,7 @@ class BreakdanceEditor
 
     public function init()
     {
-        add_action('breakdance_loaded', fn () => $this->editor_assets(), 1_000_000);
+        add_action('wp', fn () => $this->editor_assets(), 1_000_001);
     }
 
     public function editor_assets()
@@ -79,11 +79,6 @@ class BreakdanceEditor
         }
 
         do_action('a!yabe/movebender/core/breakdanceeditor:editor_assets.start');
-
-        // AssetVite::get_instance()->enqueue_asset('assets/move/main.js', [
-        //     'handle' => MOVEBENDER::WP_OPTION . ':editor',
-        //     'in_footer' => true,
-        // ]);
 
         $localize = json_encode([
             '_version' => MOVEBENDER::VERSION,
@@ -122,7 +117,6 @@ class BreakdanceEditor
         foreach ($assets['styles'] as $asset) {
             echo sprintf('<link rel="stylesheet" href="%s">', $asset);
         }
-
 
         do_action('a!yabe/movebender/core/breakdanceeditor:editor_assets.end');
     }

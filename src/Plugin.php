@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Yabe\Movebender;
 
+use EDD_SL\PluginUpdater;
 use Exception;
 use MOVEBENDER;
 use WP_Upgrader;
@@ -29,6 +30,14 @@ use Yabe\Movebender\Utils\Notice;
  */
 final class Plugin
 {
+    /**
+     * Easy Digital Downloads Software Licensing integration wrapper.
+     * Pro version only.
+     *
+     * @var PluginUpdater|null
+     */
+    public $plugin_updater = null;
+
     /**
      * Stores the instance, implementing a Singleton pattern.
      */
@@ -114,6 +123,8 @@ final class Plugin
 
         update_option(MOVEBENDER::WP_OPTION . '_version', MOVEBENDER::VERSION);
 
+        $this->maybe_embedded_license();
+
         do_action('a!yabe/movebender/plugin:activate_plugin.end');
     }
 
@@ -163,7 +174,7 @@ final class Plugin
 
         if (is_admin()) {
             add_action('admin_notices', static fn () => Notice::admin_notices());
-            // add_filter('plugin_action_links_' . plugin_basename(MOVEBENDER::FILE), fn ($links) => $this->plugin_action_links($links));
+            add_filter('plugin_action_links_' . plugin_basename(MOVEBENDER::FILE), fn ($links) => $this->plugin_action_links($links));
         }
 
         do_action('a!yabe/movebender/plugin:plugins_loaded.end');
@@ -183,10 +194,84 @@ final class Plugin
 
         array_unshift($links, sprintf(
             '<a href="%s">%s</a>',
-            esc_url(sprintf('%s#/settings', $base_url)),
+            esc_url(sprintf('%s', $base_url)),
             esc_html__('Settings', 'yabe-movebender')
         ));
 
         return $links;
+    }
+
+    /**
+     * Check if the plugin distributed with an embedded license and activate the license.
+     * Pro version only.
+     */
+    private function maybe_embedded_license(): void
+    {
+        if (! class_exists(PluginUpdater::class)) {
+            return;
+        }
+
+        $license_file = dirname(MOVEBENDER::FILE) . '/license-data.php';
+
+        if (! file_exists($license_file)) {
+            return;
+        }
+
+        require_once $license_file;
+
+        $const_name = 'ROSUA_EMBEDDED_LICENSE_KEY_' . MOVEBENDER::EDD_STORE['item_id'];
+
+        if (! defined($const_name)) {
+            return;
+        }
+
+        $license_key = constant($const_name);
+
+        update_option(MOVEBENDER::WP_OPTION . '_license', [
+            'key' => $license_key,
+            'opt_in_pre_release' => false,
+        ]);
+
+        unlink($license_file);
+
+        // activate the license.
+        $this->maybe_update_plugin()->activate($license_key);
+    }
+
+    /**
+     * Initialize the plugin updater.
+     * Pro version only.
+     *
+     * @return PluginUpdater
+     */
+    public function maybe_update_plugin()
+    {
+        if (! class_exists(PluginUpdater::class)) {
+            return null;
+        }
+
+        if ($this->plugin_updater instanceof \EDD_SL\PluginUpdater) {
+            return $this->plugin_updater;
+        }
+
+        $license = get_option(MOVEBENDER::WP_OPTION . '_license', [
+            'key' => '',
+            'opt_in_pre_release' => false,
+        ]);
+
+        $this->plugin_updater = new PluginUpdater(
+            MOVEBENDER::WP_OPTION,
+            [
+                'version' => MOVEBENDER::VERSION,
+                'license' => $license['key'] ? trim($license['key']) : false,
+                'beta' => $license['opt_in_pre_release'],
+                'plugin_file' => MOVEBENDER::FILE,
+                'item_id' => MOVEBENDER::EDD_STORE['item_id'],
+                'store_url' => MOVEBENDER::EDD_STORE['store_url'],
+                'author' => MOVEBENDER::EDD_STORE['author'],
+            ]
+        );
+
+        return $this->plugin_updater;
     }
 }

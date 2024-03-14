@@ -26,12 +26,12 @@ class MOVEBENDER
     /**
      * @var string
      */
-    public const VERSION = '1.0.0-DEV';
+    public const VERSION = '1.0.1';
 
     /**
      * @var int
      */
-    public const VERSION_ID = 10000;
+    public const VERSION_ID = 10001;
 
     /**
      * @var int
@@ -46,12 +46,12 @@ class MOVEBENDER
     /**
      * @var int
      */
-    public const RELEASE_VERSION = 0;
+    public const RELEASE_VERSION = 1;
 
     /**
      * @var string
      */
-    public const EXTRA_VERSION = 'DEV';
+    public const EXTRA_VERSION = '';
 
     /**
      * @var string
@@ -67,4 +67,13 @@ class MOVEBENDER
      * @var string
      */
     public const REST_NAMESPACE = 'yabe-movebender/v1';
+
+    /**
+     * @var array
+     */
+    public const EDD_STORE = [
+        'store_url' => 'https://rosua.org',
+        'item_id' => 2636,
+        'author' => 'idrosua',
+    ];
 }

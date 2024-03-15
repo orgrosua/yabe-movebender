@@ -88,6 +88,8 @@ return [
 
         ...$polyfillsBootstraps,
         ...$polyfillsStubs,
+
+        'src/Core/template/loader.php',
     ],
 
     // When scoping PHP files, there will be scenarios where some of the code being scoped indirectly references the

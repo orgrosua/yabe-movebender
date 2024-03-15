@@ -7,7 +7,7 @@
  * Plugin Name:         Yabe Movebender
  * Plugin URI:          https://movebender.yabe.land
  * Description:         The Breakdance builder extension
- * Version:             1.0.3
+ * Version:             1.0.4
  * Requires at least:   6.0
  * Requires PHP:        7.4
  * Author:              Rosua

@@ -69,7 +69,16 @@ class BreakdanceEditor
 
     public function init()
     {
-        add_action('wp', fn () => $this->editor_assets(), 1_000_001);
+        add_filter('template_include', fn ($file_to_include) => $this->template_include($file_to_include), 1_000_001);
+        add_action('a!yabe/movebender/core/template/loader:head.end', fn () => $this->editor_assets(), 1_000_001);
+    }
+
+    public function template_include($file_to_include) {
+        if (!isset($_GET['breakdance']) || $_GET['breakdance'] !== 'builder') {
+            return $file_to_include;
+        }
+
+        return plugin_dir_path(__FILE__) . '/template/loader.php';
     }
 
     public function editor_assets()

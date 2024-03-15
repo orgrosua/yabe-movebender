@@ -4,7 +4,7 @@ Donate link: https://ko-fi.com/Q5Q75XSF7
 Tags: breakdance builder
 Requires at least: 6.0
 Tested up to: 6.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -44,6 +44,9 @@ Visit [our website](https://movebender.yabe.land) for more information.
 - Image by [Victoruler](https://www.flaticon.com/free-icon/lion-dance_2401860) on Flaticon
 
 == Changelog ==
+
+= 1.0.2 =
+* **Fixed**: The Breakdance editor structure panel's items are far apart.
 
 = 1.0.1 =
 * Built-in plugin updater. Users can now update the plugin directly from the WordPress admin dashboard.
